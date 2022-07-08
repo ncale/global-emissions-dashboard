@@ -3,31 +3,37 @@
 # run the application by clicking 'Run App' above.
 #
 
-
-
+# load packages
 library(shiny)
+library(RCurl)
+
+# load data
+data_url <- 'https://raw.githubusercontent.com/owid/co2-data/master/owid-co2-data.csv'
+DATA <- read.csv(text = getURL(data_url), stringsAsFactors=TRUE)
+
+# prep data
 
 
-
-# Define UI for application that draws a histogram
+# define application UI
 shinyUI(fluidPage(
 
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    # title
+    titlePanel("Global Emissions Dashboard"),
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            sliderInput("yearRange","Input Year Range:",
+                        min=min(DATA$year), max=max(DATA$year), 
+                        value=c(min(DATA$year),max(DATA$year))),
+            radioButtons("perCap", "Select total or per capita emissions",
+                         choices=c("total", "per capita"),
+                         selected="total")
         ),
-
-        # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("distPlot")
+            plotOutput("overallEmissions")
         )
-    )
-))
+        
+    ) # end sidebar layout function
+    
+)) # end application UI

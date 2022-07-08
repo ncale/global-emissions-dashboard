@@ -3,24 +3,35 @@
 # application by clicking 'Run App' above.
 #
 
-
-
+# load packages
 library(shiny)
+library(tidyverse)
+library(ggplot2)
+library(RCurl)
 
+# load data
+data_url <- 'https://raw.githubusercontent.com/owid/co2-data/master/owid-co2-data.csv'
+DATA <- read.csv(text = getURL(data_url), stringsAsFactors=TRUE)
 
-
-# Define server logic required to draw a histogram
+# define server logic
 shinyServer(function(input, output) {
 
-    output$distPlot <- renderPlot({
+    output$overallEmissions <- renderPlot({
 
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+        # prep data based on input$... from ui.R
+        DATA.VIS <- subset(DATA, subset=!is.na(DATA$co2))
+        if (input$perCap=="total") {
+          DATA.VIS <- aggregate(co2~year, DATA.VIS, FUN=sum)
+        } else {
+          DATA.VIS <- aggregate(co2_per_capita~year, DATA.VIS, FUN=sum)
+        }
+        
+        
+        # generate the plot
+        ggplot(DATA.VIS, aes(x=year, y=.data[[names(DATA.VIS)[2]]])) +
+          geom_line() +
+          xlim(input$yearRange[1], input$yearRange[2])
 
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    }) # end output
 
-    })
-
-})
+}) # end server

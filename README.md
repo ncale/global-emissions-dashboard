@@ -4,7 +4,7 @@ Despite the huge number of insights available to us thanks to technology and sci
 
 With that, this interactive dashboard aims to increase awareness on the realities of carbon dioxide and GHG emissions from the industrial era forward. It measures emissions from a variety of sources measuring from the year 1750 to 2020, and was built using the R Shiny package. Please share the link with friends and family if you found something interesting.
 
-[Click here to see the dashboard]()
+[Click here to see the dashboard](https://nickcale.shinyapps.io/GlobalEmissionsDashboard/)
 
 ## Sources
 
